@@ -1,0 +1,6 @@
+[global.databases]
+my_db={url = "postgres://postgres:postgres@postgres/app_db"}
+
+
+[default]
+address = "0.0.0.0"

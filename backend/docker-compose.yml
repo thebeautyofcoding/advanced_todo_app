@@ -1,0 +1,40 @@
+version: '3.3'
+
+services:
+
+  # PostgreSQL database service
+  postgres:
+    # Use the latest version of the PostgreSQL image from Docker Hub
+    image: postgres:latest
+
+    # Set environment variables for the PostgreSQL container
+    environment:
+      - POSTGRES_USER=postgres # Username for the PostgreSQL instance
+      - POSTGRES_PASSWORD=postgres # Password for the PostgreSQL instance
+      - POSTGRES_DB=app_db # Name of the database to be created
+      - POSTGRES_HOST_AUTH_METHOD=trust # Allow connections without a password
+
+    # Run the PostgreSQL server with custom configuration options
+    command:
+      - postgres # Start the PostgreSQL server
+      - -c # Specify a configuration option
+      - max_connections=1000 # Set maximum number of concurrent connections
+      - -c # Specify another configuration option
+      - log_statement=all # Log all SQL statements executed
+
+  # Application service
+  app:
+    # Build the application from the current directory
+    build: .
+
+    # Set environment variables for the application container
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@postgres/app_db # Connection URL for the PostgreSQL databas
+
+    # Map the host's port 8000 to the container's port 8000
+    ports:
+      - 8000:8000
+
+    # Mount the current directory on the host to /app in the container, allowing for live code updates
+    volumes:
+      - ./:/app
